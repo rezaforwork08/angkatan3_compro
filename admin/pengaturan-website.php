@@ -9,6 +9,9 @@ if (isset($_POST['simpan'])) {
     $website_name     = $_POST['website_name'];
     $website_link     = $_POST['website_link'];
     $id               = $_POST['id'];
+    $website_phone    = $_POST['website_phone'];
+    $website_email    = $_POST['website_email'];
+    $website_address  = $_POST['website_address'];
 
     // mencari data di dalam table pengaturan, jika ada data akan di update, 
     // jika tidak ada akan di insert
@@ -31,10 +34,16 @@ if (isset($_POST['simpan'])) {
                 // pindahkan gambar dari tmp folder ke folder yang sudah kita buat
                 move_uploaded_file($_FILES['foto']['tmp_name'], 'upload/' . $nama_foto);
 
-                $update = mysqli_query($koneksi, "UPDATE general_setting SET website_name='$website_name', website_link='$website_link',  logo='$nama_foto' WHERE id ='$id'");
+                $update = mysqli_query($koneksi, "UPDATE general_setting SET 
+                website_name='$website_name', website_link='$website_link',  
+                logo='$nama_foto', website_phone ='$website_phone', website_email='$website_email',
+                website_address='$website_address' 
+                 WHERE id ='$id'");
             }
         } else {
-            $update = mysqli_query($koneksi, "UPDATE general_setting SET website_name='$website_name', website_link ='$website_link' WHERE id ='$id'");
+            $update = mysqli_query($koneksi, "UPDATE general_setting SET website_name='$website_name', website_link ='$website_link', 
+            website_phone ='$website_phone', website_email='$website_email', website_address='$website_address'
+             WHERE id ='$id'");
         }
     } else {
         // insert query
@@ -168,32 +177,56 @@ if (isset($_POST['edit'])) {
 
                                             <div class="mb-3 row">
                                                 <div class="col-sm-6">
-                                                    <label for="" class="form-label">Nama Website</label>
-                                                    <input type="text"
-                                                        class="form-control"
-                                                        name="website_name"
-                                                        placeholder="Masukkan nama website"
-                                                        required
-                                                        value="<?php echo isset($rowPengaturan['website_name']) ? $rowPengaturan['website_name'] : '' ?>">
+                                                    <div class="mb-3">
+                                                        <label for="" class="form-label">Nama Website</label>
+                                                        <input type="text"
+                                                            class="form-control"
+                                                            name="website_name"
+                                                            placeholder="Masukkan nama website"
+                                                            required
+                                                            value="<?php echo isset($rowPengaturan['website_name']) ? $rowPengaturan['website_name'] : '' ?>">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="" class="form-label">Telepon</label>
+                                                        <input type="text"
+                                                            class="form-control"
+                                                            name="website_phone"
+                                                            placeholder="Masukkan telp website"
+                                                            required
+                                                            value="<?php echo isset($rowPengaturan['website_phone']) ? $rowPengaturan['website_phone'] : '' ?>">
+                                                    </div>
+
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <label for="" class="form-label">Link Website</label>
-                                                    <input type="url"
-                                                        class="form-control"
-                                                        name="website_link"
-                                                        placeholder="Masukkan link website anda"
-                                                        required
-                                                        value="<?php echo isset($rowPengaturan['website_link']) ? $rowPengaturan['website_link'] : '' ?>">
+                                                    <div class="mb-3">
+                                                        <label for="" class="form-label">Link Website</label>
+                                                        <input type="url"
+                                                            class="form-control"
+                                                            name="website_link"
+                                                            placeholder="Masukkan link website anda"
+                                                            required
+                                                            value="<?php echo isset($rowPengaturan['website_link']) ? $rowPengaturan['website_link'] : '' ?>">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="" class="form-label">Email Website</label>
+                                                        <input type="email"
+                                                            class="form-control"
+                                                            name="website_email"
+                                                            placeholder="Masukkan email website"
+                                                            required
+                                                            value="<?php echo isset($rowPengaturan['website_email']) ? $rowPengaturan['website_email'] : '' ?>">
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
                                                 <div class="col-sm-12">
-                                                    <label for="" class="form-label">Password</label>
-                                                    <input type="password"
-                                                        name="password"
-                                                        placeholder="Masukkan password anda"
+                                                    <label for="" class="form-label">Alamat</label>
+                                                    <input type="text"
+                                                        name="website_address"
+                                                        placeholder="Masukkan alamat anda"
                                                         class="form-control"
-                                                        id="">
+                                                        value="<?php echo isset($rowPengaturan['website_address']) ? $rowPengaturan['website_address'] : '' ?>">
+
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">

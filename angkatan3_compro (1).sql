@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 23, 2024 at 10:32 AM
+-- Generation Time: Oct 24, 2024 at 10:03 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,36 @@ SET time_zone = "+00:00";
 --
 -- Database: `angkatan3_compro`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `general_setting`
+--
+
+CREATE TABLE `general_setting` (
+  `id` int(11) NOT NULL,
+  `website_name` varchar(50) NOT NULL,
+  `website_link` varchar(50) DEFAULT NULL,
+  `website_phone` varchar(16) NOT NULL,
+  `website_email` varchar(50) NOT NULL,
+  `website_address` text NOT NULL,
+  `twitter_link` varchar(100) DEFAULT NULL,
+  `fb_link` varchar(100) DEFAULT NULL,
+  `ig_link` varchar(100) DEFAULT NULL,
+  `linkedin_link` varchar(100) DEFAULT NULL,
+  `youtube_link` varchar(100) DEFAULT NULL,
+  `logo` varchar(100) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `general_setting`
+--
+
+INSERT INTO `general_setting` (`id`, `website_name`, `website_link`, `website_phone`, `website_email`, `website_address`, `twitter_link`, `fb_link`, `ig_link`, `linkedin_link`, `youtube_link`, `logo`, `created_at`, `updated_at`) VALUES
+(1, 'PPKD Jakarta Pusat', 'https://themewagon.github.io/elearning/index.html', '08994212290', 'ribrahim50@gmail.com', 'Jakarta Pusat', NULL, NULL, NULL, NULL, NULL, 'Screenshot (1).png', '2024-10-24 02:51:50', '2024-10-24 07:40:49');
 
 -- --------------------------------------------------------
 
@@ -51,6 +81,12 @@ INSERT INTO `user` (`id`, `nama`, `email`, `password`, `foto`, `created_at`, `up
 --
 
 --
+-- Indexes for table `general_setting`
+--
+ALTER TABLE `general_setting`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
@@ -59,6 +95,12 @@ ALTER TABLE `user`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `general_setting`
+--
+ALTER TABLE `general_setting`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `user`
