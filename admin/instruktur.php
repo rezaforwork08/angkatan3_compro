@@ -1,63 +1,17 @@
 <?php
 session_start();
 include 'koneksi.php';
-// jika button simpan di tekan
-if (isset($_POST['simpan'])) {
-    $nama     = $_POST['nama'];
-    $email    = $_POST['email'];
-    $password = $_POST['password'];
+// munculkan / pilih sebuah atau semua kolom dari table user
+$query = mysqli_query($koneksi, "SELECT * FROM instruktur");
+// mysqli_fetch_assoc($query) = untuk menjadikan hasil query menjadi sebuah data (object,array)
 
-    // $_POST: form input name=''
-    // $_GET : url ?param='nilai'
-    // $_FILES: ngambil nilai dari input type file
-    if (!empty($_FILES['foto']['name'])) {
-        $nama_foto = $_FILES['foto']['name'];
-        $ukuran_foto = $_FILES['foto']['size'];
+// jika parameternya ada ?delete=nilai param
+if (isset($_GET['delete'])) {
+    $id = $_GET['delete']; //mengambil nilai params
 
-        // png, jpg, jpeg
-        $ext = array('png', 'jpg', 'jpeg');
-        $extFoto = pathinfo($nama_foto, PATHINFO_EXTENSION);
-
-        // JIKA EXTENSI FOTO TIDAK ADA EXT YANG TERDAFTAR DI ARRAY EXT
-        if (!in_array($extFoto, $ext)) {
-            echo "Ext tidak ditemukan";
-            die;
-        } else {
-            // pindahkan gambar dari tmp folder ke folder yang sudah kita buat
-            move_uploaded_file($_FILES['foto']['tmp_name'], 'upload/' . $nama_foto);
-
-            $insert = mysqli_query($koneksi, "INSERT INTO user (nama, email, password, foto)
-            VALUES ('$nama','$email','$password','$nama_foto')");
-        }
-    } else {
-        $insert = mysqli_query($koneksi, "INSERT INTO user (nama, email, password)
-            VALUES ('$nama','$email','$password')");
-    }
-
-    header("location:user.php?tambah=berhasil");
-}
-
-$id  = isset($_GET['edit']) ? $_GET['edit'] : '';
-$queryEdit = mysqli_query($koneksi, "SELECT * FROM user WHERE id ='$id'");
-$rowEdit   = mysqli_fetch_assoc($queryEdit);
-
-
-// jika button edit di klik
-
-if (isset($_POST['edit'])) {
-    $nama   = $_POST['nama'];
-    $email  = $_POST['email'];
-
-    // jika password di isi sama user
-    if ($_POST['passsword']) {
-        $password = $_POST['password'];
-    } else {
-        $password = $rowEdit['password'];
-    }
-
-    $update = mysqli_query($koneksi, "UPDATE user SET nama='$nama', 
-    email='$email', password ='$password' WHERE id='$id'");
-    header("location:user.php?ubah=berhasil");
+    // query / perintah hapus
+    $delete = mysqli_query($koneksi, "DELETE FROM instruktur  WHERE id ='$id'");
+    header("location:instruktur.php?hapus=berhasil");
 }
 ?>
 <!DOCTYPE html>
@@ -119,58 +73,49 @@ if (isset($_POST['edit'])) {
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="card">
-                                    <div class="card-header"><?php echo isset($_GET['edit']) ? 'Edit' : 'Tambah' ?> User</div>
+                                    <div class="card-header">Data Instruktur</div>
                                     <div class="card-body">
                                         <?php if (isset($_GET['hapus'])): ?>
                                             <div class="alert alert-success" role="alert">
                                                 Data berhasil dihapus
                                             </div>
                                         <?php endif ?>
-
-                                        <form action="" method="post" enctype="multipart/form-data">
-                                            <div class="mb-3 row">
-                                                <div class="col-sm-6">
-                                                    <label for="" class="form-label">Nama</label>
-                                                    <input type="text"
-                                                        class="form-control"
-                                                        name="nama"
-                                                        placeholder="Masukkan nama anda"
-                                                        required
-                                                        value="<?php echo isset($_GET['edit']) ? $rowEdit['nama'] : '' ?>">
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <label for="" class="form-label">Email</label>
-                                                    <input type="email"
-                                                        class="form-control"
-                                                        name="email"
-                                                        placeholder="Masukkan email anda"
-                                                        required
-                                                        value="<?php echo isset($_GET['edit']) ? $rowEdit['email'] : '' ?>">
-                                                </div>
-                                            </div>
-                                            <div class="mb-3 row">
-                                                <div class="col-sm-12">
-                                                    <label for="" class="form-label">Password</label>
-                                                    <input type="password"
-                                                        name="password"
-                                                        placeholder="Masukkan password anda"
-                                                        class="form-control"
-                                                        id="">
-                                                </div>
-                                            </div>
-                                            <div class="mb-3 row">
-                                                <div class="col-sm-12">
-                                                    <label for="" class="form-label">Foto</label>
-                                                    <input type="file"
-                                                        name="foto">
-                                                </div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <button class="btn btn-primary" name="<?php echo isset($_GET['edit']) ? 'edit' : 'simpan' ?>" type="submit">
-                                                    Simpan
-                                                </button>
-                                            </div>
-                                        </form>
+                                        <div align="right" class="mb-3">
+                                            <a href="tambah-instruktur.php" class="btn btn-primary">Tambah</a>
+                                        </div>
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Foto</th>
+                                                    <th>Nama</th>
+                                                    <th>Jurusan</th>
+                                                    <th>Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php $no = 1;
+                                                while ($row = mysqli_fetch_assoc($query)) { ?>
+                                                    <tr>
+                                                        <td><?php echo $no++ ?></td>
+                                                        <td>
+                                                            <img width="100" src="upload/<?php echo $row['foto'] ?>" alt="">
+                                                        </td>
+                                                        <td><?php echo $row['nama_instruktur'] ?></td>
+                                                        <td><?php echo $row['jurusan_instruktur'] ?></td>
+                                                        <td>
+                                                            <a href="tambah-instruktur.php?edit=<?php echo $row['id'] ?>" class="btn btn-success btn-sm">
+                                                                <span class="tf-icon bx bx-pencil bx-18px "></span>
+                                                            </a>
+                                                            <a onclick="return confirm('Apakah anda yakin akan menghapus data ini??')"
+                                                                href="instruktur.php?delete=<?php echo $row['id'] ?>" class="btn btn-danger btn-sm">
+                                                                <span class="tf-icon bx bx-trash bx-18px "></span>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                <?php } ?>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>

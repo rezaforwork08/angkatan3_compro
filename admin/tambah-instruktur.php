@@ -3,9 +3,8 @@ session_start();
 include 'koneksi.php';
 // jika button simpan di tekan
 if (isset($_POST['simpan'])) {
-    $nama     = $_POST['nama'];
-    $email    = $_POST['email'];
-    $password = $_POST['password'];
+    $nama_instruktur     = $_POST['nama_instruktur'];
+    $jurusan_instruktur  = $_POST['jurusan_instruktur'];
 
     // $_POST: form input name=''
     // $_GET : url ?param='nilai'
@@ -26,38 +25,54 @@ if (isset($_POST['simpan'])) {
             // pindahkan gambar dari tmp folder ke folder yang sudah kita buat
             move_uploaded_file($_FILES['foto']['tmp_name'], 'upload/' . $nama_foto);
 
-            $insert = mysqli_query($koneksi, "INSERT INTO user (nama, email, password, foto)
-            VALUES ('$nama','$email','$password','$nama_foto')");
+            $insert = mysqli_query($koneksi, "INSERT INTO instruktur (nama_instruktur, jurusan_instruktur,  foto)
+            VALUES ('$nama_instruktur','$jurusan_instruktur','$nama_foto')");
         }
     } else {
-        $insert = mysqli_query($koneksi, "INSERT INTO user (nama, email, password)
-            VALUES ('$nama','$email','$password')");
+        $insert = mysqli_query($koneksi, "INSERT INTO instruktur (nama_instruktur, jurusan_instruktur)
+            VALUES ('$nama_instruktur','$jurusan_instruktur')");
     }
 
-    header("location:user.php?tambah=berhasil");
+    header("location:instruktur.php?tambah=berhasil");
 }
 
 $id  = isset($_GET['edit']) ? $_GET['edit'] : '';
-$queryEdit = mysqli_query($koneksi, "SELECT * FROM user WHERE id ='$id'");
+$queryEdit = mysqli_query($koneksi, "SELECT * FROM instruktur WHERE id ='$id'");
 $rowEdit   = mysqli_fetch_assoc($queryEdit);
 
 
 // jika button edit di klik
 
 if (isset($_POST['edit'])) {
-    $nama   = $_POST['nama'];
-    $email  = $_POST['email'];
+    $nama_instruktur   = $_POST['nama_instruktur'];
+    $jurusan_instruktur  = $_POST['jurusan_instruktur'];
 
-    // jika password di isi sama user
-    if ($_POST['passsword']) {
-        $password = $_POST['password'];
+    // jika user ingin memasukkan gambar
+    if (!empty($_FILES['foto']['name'])) {
+        $nama_foto = $_FILES['foto']['name'];
+        $ukuran_foto = $_FILES['foto']['size'];
+
+        // png, jpg, jpeg
+        $ext = array('png', 'jpg', 'jpeg');
+        $extFoto = pathinfo($nama_foto, PATHINFO_EXTENSION);
+
+        if (!in_array($extFoto, $ext)) {
+            echo "Extensi gambar tidak ditemukan";
+            die;
+        } else {
+            unlink('upload/' . $rowEdit['foto']);
+            move_uploaded_file($_FILES['foto']['tmp_name'], 'upload/' . $nama_foto);
+            // coding ubah/update disini
+            $update = mysqli_query($koneksi, "UPDATE instruktur SET nama_instruktur='$nama_instruktur', 
+            jurusan_instruktur='$jurusan_instruktur', foto='$nama_foto' WHERE id='$id'");
+        }
     } else {
-        $password = $rowEdit['password'];
+        // kalo user tidak ingin memasukkan gambar
+        $update = mysqli_query($koneksi, "UPDATE instruktur SET nama_instruktur='$nama_instruktur', 
+            jurusan_instruktur='$jurusan_instruktur' WHERE id='$id'");
     }
 
-    $update = mysqli_query($koneksi, "UPDATE user SET nama='$nama', 
-    email='$email', password ='$password' WHERE id='$id'");
-    header("location:user.php?ubah=berhasil");
+    header("location:instruktur.php?ubah=berhasil");
 }
 ?>
 <!DOCTYPE html>
@@ -119,36 +134,32 @@ if (isset($_POST['edit'])) {
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="card">
-                                    <div class="card-header"><?php echo isset($_GET['edit']) ? 'Edit' : 'Tambah' ?> User</div>
+                                    <div class="card-header"><?php echo isset($_GET['edit']) ? 'Edit' : 'Tambah' ?> Instruktur</div>
                                     <div class="card-body">
-                                        <?php if (isset($_GET['hapus'])): ?>
-                                            <div class="alert alert-success" role="alert">
-                                                Data berhasil dihapus
-                                            </div>
-                                        <?php endif ?>
+
 
                                         <form action="" method="post" enctype="multipart/form-data">
                                             <div class="mb-3 row">
                                                 <div class="col-sm-6">
-                                                    <label for="" class="form-label">Nama</label>
+                                                    <label for="" class="form-label">Nama Instruktur</label>
                                                     <input type="text"
                                                         class="form-control"
-                                                        name="nama"
-                                                        placeholder="Masukkan nama anda"
+                                                        name="nama_instruktur"
+                                                        placeholder="Masukkan nama instruktur"
                                                         required
-                                                        value="<?php echo isset($_GET['edit']) ? $rowEdit['nama'] : '' ?>">
+                                                        value="<?php echo isset($_GET['edit']) ? $rowEdit['nama_instruktur'] : '' ?>">
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <label for="" class="form-label">Email</label>
-                                                    <input type="email"
+                                                    <label for="" class="form-label">Jurusan</label>
+                                                    <input type="text"
                                                         class="form-control"
-                                                        name="email"
-                                                        placeholder="Masukkan email anda"
+                                                        name="jurusan_instruktur"
+                                                        placeholder="Masukkan jurusan instruktur"
                                                         required
-                                                        value="<?php echo isset($_GET['edit']) ? $rowEdit['email'] : '' ?>">
+                                                        value="<?php echo isset($_GET['edit']) ? $rowEdit['jurusan_instruktur'] : '' ?>">
                                                 </div>
                                             </div>
-                                            <div class="mb-3 row">
+                                            <!-- <div class="mb-3 row">
                                                 <div class="col-sm-12">
                                                     <label for="" class="form-label">Password</label>
                                                     <input type="password"
@@ -157,7 +168,7 @@ if (isset($_POST['edit'])) {
                                                         class="form-control"
                                                         id="">
                                                 </div>
-                                            </div>
+                                            </div> -->
                                             <div class="mb-3 row">
                                                 <div class="col-sm-12">
                                                     <label for="" class="form-label">Foto</label>
