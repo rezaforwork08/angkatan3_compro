@@ -108,6 +108,7 @@
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Pages</span>
         </li>
+
         <li class="menu-item">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-dock-top"></i>
@@ -117,6 +118,11 @@
                 <li class="menu-item">
                     <a href="user.php" class="menu-link">
                         <div data-i18n="Account">Data User</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="contact-admin.php" class="menu-link">
+                        <div data-i18n="Account">Contact</div>
                     </a>
                 </li>
                 <li class="menu-item">

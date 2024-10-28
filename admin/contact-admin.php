@@ -2,7 +2,7 @@
 session_start();
 include 'koneksi.php';
 // munculkan / pilih sebuah atau semua kolom dari table user
-$query = mysqli_query($koneksi, "SELECT * FROM instruktur");
+$queryContact = mysqli_query($koneksi, "SELECT * FROM contact WHERE deleted_at IS NULL");
 // mysqli_fetch_assoc($query) = untuk menjadikan hasil query menjadi sebuah data (object,array)
 
 // jika parameternya ada ?delete=nilai param
@@ -10,8 +10,8 @@ if (isset($_GET['delete'])) {
     $id = $_GET['delete']; //mengambil nilai params
 
     // query / perintah hapus
-    $delete = mysqli_query($koneksi, "DELETE FROM instruktur  WHERE id ='$id'");
-    header("location:instruktur.php?hapus=berhasil");
+    $delete = mysqli_query($koneksi, "DELETE FROM user  WHERE id ='$id'");
+    header("location:user.php?hapus=berhasil");
 }
 ?>
 <!DOCTYPE html>
@@ -73,42 +73,43 @@ if (isset($_GET['delete'])) {
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="card">
-                                    <div class="card-header">Data Instruktur</div>
+                                    <div class="card-header">Manage Contact</div>
                                     <div class="card-body">
-                                        <?php if (isset($_GET['hapus']) && $_GET['hapus'] == "berhasil"): ?>
+                                        <?php if (isset($_GET['hapus'])): ?>
                                             <div class="alert alert-success" role="alert">
                                                 Data berhasil dihapus
                                             </div>
                                         <?php endif ?>
                                         <div align="right" class="mb-3">
-                                            <a href="tambah-instruktur.php" class="btn btn-primary">Tambah</a>
+                                            <a href="tambah-user.php" class="btn btn-primary">Tambah</a>
                                         </div>
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Foto</th>
                                                     <th>Nama</th>
-                                                    <th>Jurusan</th>
+                                                    <th>Email</th>
+                                                    <th>Subject</th>
+                                                    <th>Pesan</th>
                                                     <th>Aksi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <?php $no = 1;
-                                                while ($row = mysqli_fetch_assoc($query)) { ?>
+                                                $rowContacts = mysqli_fetch_all($queryContact, MYSQLI_ASSOC);
+                                                foreach ($rowContacts as $rowContact) { ?>
                                                     <tr>
                                                         <td><?php echo $no++ ?></td>
+                                                        <td><?php echo $rowContact['nama'] ?></td>
+                                                        <td><?php echo $rowContact['email'] ?></td>
+                                                        <td><?php echo $rowContact['subject'] ?></td>
+                                                        <td><?php echo $rowContact['message'] ?></td>
                                                         <td>
-                                                            <img width="100" src="upload/<?php echo $row['foto'] ?>" alt="">
-                                                        </td>
-                                                        <td><?php echo $row['nama_instruktur'] ?></td>
-                                                        <td><?php echo $row['jurusan_instruktur'] ?></td>
-                                                        <td>
-                                                            <a href="tambah-instruktur.php?edit=<?php echo $row['id'] ?>" class="btn btn-success btn-sm">
-                                                                <span class="tf-icon bx bx-pencil bx-18px "></span>
+                                                            <a href="kirim-pesan.php?pesanId=<?php echo $rowContact['id'] ?>" class="btn btn-success btn-sm">
+                                                                Balas Pesan
                                                             </a>
                                                             <a onclick="return confirm('Apakah anda yakin akan menghapus data ini??')"
-                                                                href="instruktur.php?delete=<?php echo $row['id'] ?>" class="btn btn-danger btn-sm">
+                                                                href="?delete=<?php echo $rowContact['id'] ?>" class="btn btn-danger btn-sm">
                                                                 <span class="tf-icon bx bx-trash bx-18px "></span>
                                                             </a>
                                                         </td>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 25, 2024 at 09:54 AM
+-- Generation Time: Oct 28, 2024 at 09:45 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,31 @@ SET time_zone = "+00:00";
 --
 -- Database: `angkatan3_compro`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `contact`
+--
+
+CREATE TABLE `contact` (
+  `id` int(11) NOT NULL,
+  `nama` varchar(35) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `subject` varchar(50) DEFAULT NULL,
+  `message` varchar(255) DEFAULT NULL,
+  `deleted_at` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `contact`
+--
+
+INSERT INTO `contact` (`id`, `nama`, `email`, `subject`, `message`, `deleted_at`) VALUES
+(1, 'Reza Ibrahim', 'admin@gmail.com', 'Halo', 'Halo Message', NULL),
+(3, 'Bambang Pamungkas', 'bunga@gmail.com', 'Halo', 'message bambang', NULL),
+(4, 'Bambang P&#039;amungkas', 'dini123@gmail.com', 'Halo', 'sdfsdfsdf', NULL),
+(6, 'hhhh\'jjjjjj', 'hhh@gmail.com', 'Halo', 'ssdfsdfsdf', NULL);
 
 -- --------------------------------------------------------
 
@@ -146,6 +171,13 @@ INSERT INTO `user` (`id`, `nama`, `email`, `password`, `foto`, `created_at`, `up
 --
 
 --
+-- Indexes for table `contact`
+--
+ALTER TABLE `contact`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
 -- Indexes for table `general_setting`
 --
 ALTER TABLE `general_setting`
@@ -178,6 +210,12 @@ ALTER TABLE `user`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `contact`
+--
+ALTER TABLE `contact`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `general_setting`

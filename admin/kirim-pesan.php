@@ -1,18 +1,37 @@
 <?php
 session_start();
 include 'koneksi.php';
-// munculkan / pilih sebuah atau semua kolom dari table user
-$query = mysqli_query($koneksi, "SELECT * FROM instruktur");
-// mysqli_fetch_assoc($query) = untuk menjadikan hasil query menjadi sebuah data (object,array)
+// jika button simpan di tekan
 
-// jika parameternya ada ?delete=nilai param
-if (isset($_GET['delete'])) {
-    $id = $_GET['delete']; //mengambil nilai params
-
-    // query / perintah hapus
-    $delete = mysqli_query($koneksi, "DELETE FROM instruktur  WHERE id ='$id'");
-    header("location:instruktur.php?hapus=berhasil");
+if (isset($_GET['pesanId'])) {
+    $id = $_GET['pesanId'];
+    $selectContact = mysqli_query($koneksi, "SELECT * FROM contact WHERE id = $id");
+    $rowContact = mysqli_fetch_assoc($selectContact);
 }
+
+
+if (isset($_POST['kirim-bosss']) && isset($_GET['pesanId'])) {
+    $id = $_GET['pesanId'];
+    $email = $_POST['email'];
+    $subject = $_POST['subject'];
+    $balaspesan = $_POST['balaspesan'];
+
+    $headers = "From: triadhyy@gmail.com" . "\r\n" .
+        "Reply-To: triadhyy@gmail.com" . "\r\n" .
+        "Content-Type: text/plain; charset=UTF8" . "\r\n" .
+        "MIME-Version: 1.0" . "\r\n";
+
+    if (mail($email, $subject, $balaspesan, $headers)) {
+        echo "Berhasil";
+        header("Location: contact-admin.php?status=berhasil-terkirim");
+        exit();
+    } else {
+        echo "Gagal";
+        header("Location: kirim-pesan.php?status=gagal-terkirim");
+        exit();
+    }
+}
+
 ?>
 <!DOCTYPE html>
 
@@ -73,49 +92,48 @@ if (isset($_GET['delete'])) {
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="card">
-                                    <div class="card-header">Data Instruktur</div>
+                                    <div class="card-header">Balas Pesan</div>
                                     <div class="card-body">
-                                        <?php if (isset($_GET['hapus']) && $_GET['hapus'] == "berhasil"): ?>
-                                            <div class="alert alert-success" role="alert">
+                                        <ul style="list-style-type: '-'">
+                                            <li>
+                                                <pre> Name    : <?php echo $rowContact['nama'] ?></pre>
+                                            </li>
+                                            <li>
+                                                <pre> Email   : <?php echo $rowContact['email'] ?></pre>
+                                            </li>
+                                            <li>
+                                                <pre> Subject : <?php echo $rowContact['subject'] ?></pre>
+                                            </li>
+                                            <li>
+                                                <pre> Message : <?php echo $rowContact['message'] ?></pre>
+                                            </li>
+                                        </ul>
+                                        <?php
+                                        // if (isset($_GET['hapus'])): 
+                                        ?>
+                                        <!-- <div class="alert alert-success" role="alert">
                                                 Data berhasil dihapus
+                                            </div> -->
+                                        <?php
+                                        //  endif 
+                                        ?>
+
+                                        <form action="" method="post" enctype="multipart/form-data">
+                                            <div>
+                                                <input type="text" name="email" value="<?php echo $rowContact['email'] ?>">
                                             </div>
-                                        <?php endif ?>
-                                        <div align="right" class="mb-3">
-                                            <a href="tambah-instruktur.php" class="btn btn-primary">Tambah</a>
-                                        </div>
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Foto</th>
-                                                    <th>Nama</th>
-                                                    <th>Jurusan</th>
-                                                    <th>Aksi</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php $no = 1;
-                                                while ($row = mysqli_fetch_assoc($query)) { ?>
-                                                    <tr>
-                                                        <td><?php echo $no++ ?></td>
-                                                        <td>
-                                                            <img width="100" src="upload/<?php echo $row['foto'] ?>" alt="">
-                                                        </td>
-                                                        <td><?php echo $row['nama_instruktur'] ?></td>
-                                                        <td><?php echo $row['jurusan_instruktur'] ?></td>
-                                                        <td>
-                                                            <a href="tambah-instruktur.php?edit=<?php echo $row['id'] ?>" class="btn btn-success btn-sm">
-                                                                <span class="tf-icon bx bx-pencil bx-18px "></span>
-                                                            </a>
-                                                            <a onclick="return confirm('Apakah anda yakin akan menghapus data ini??')"
-                                                                href="instruktur.php?delete=<?php echo $row['id'] ?>" class="btn btn-danger btn-sm">
-                                                                <span class="tf-icon bx bx-trash bx-18px "></span>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                <?php } ?>
-                                            </tbody>
-                                        </table>
+                                            <div class="mt-3">
+                                                <label class="form-label" for="">Subject</label>
+                                                <input type="text" class="form-control" name="subject" required>
+                                            </div>
+                                            <div class="mt-3">
+                                                <label for="" class="form-label">Balas Pesan</label>
+                                                <textarea class="form-control" name="balaspesan" cols="30" rows="10" required></textarea>
+                                            </div>
+                                            <div class="mt-3">
+                                                <button class="btn btn-primary" name="kirim-bosss">Kirim Pesan</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
